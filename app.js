@@ -79,20 +79,19 @@ document.getElementById('langBtn').addEventListener('click',()=>{language=langua
 document.getElementById('menuBtn').addEventListener('click',()=>document.querySelector('nav').classList.toggle('open'));
 document.getElementById('year').textContent=new Date().getFullYear();
 async function startApp() {
-  console.log("Farm website starting...");
+const status = document.createElement('div');
+status.style.cssText = 'padding:15px;margin:15px;background:#fff3cd;color:#333;border-radius:8px;font-size:14px;';
+status.textContent = 'Products loading...';
+document.body.prepend(status);
 
-  console.log("Supabase connected:", !!supabase);
-
-  await loadProducts();
-
-  console.log("Products found:", products.length);
-  console.log("Products data:", products);
-
-  render();
-
-  console.log("Rendering completed");
+try {
+await loadProducts();
+status.textContent = 'Products loaded: ' + products.length;
+status.style.background = '#d1e7dd';
+render();
+} catch (error) {
+status.textContent = 'Loading error: ' + error.message;
+}
 }
 
-startApp().catch(error => {
-  console.error("App startup error:", error);
-});
+startApp();
