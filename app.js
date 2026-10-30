@@ -31,8 +31,30 @@ if (
 }
 const localLoad=()=>{try{return JSON.parse(localStorage.getItem('kaf_products'))||seedProducts}catch{return seedProducts}};
 async function loadProducts(){
- if(supabase){const {data,error}=await supabase.from('products').select('*').order('name');if(!error&&data){products=data;return;}console.warn(error);}
- products=localLoad();
+  try {
+    if (supabase) {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('name');
+
+      if (error) throw error;
+
+      if (Array.isArray(data) && data.length > 0) {
+        products = data;
+        console.log('Supabase products loaded:', data.length);
+        return;
+      }
+    }
+  } catch (error) {
+    console.error('Product loading failed:', error);
+  }
+
+  products = localLoad();
+
+  if (!products.length) {
+    products = seedProducts;
+  }
 }
 function money(v){return '₹'+Number(v||0).toLocaleString('en-IN')}
 function categoryName(c){return ({fruits:'Fruits',poultry:'Poultry',vegetables:'Vegetables'})[c]||c}
