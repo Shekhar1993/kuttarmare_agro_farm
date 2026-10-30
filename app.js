@@ -37,6 +37,8 @@ async function loadProducts(){
         .from('products')
         .select('*')
         .order('name');
+     console.log("SUPABASE ERROR:", error);
+console.log("SUPABASE DATA:", data);
 
       if (error) throw error;
 
