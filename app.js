@@ -13,7 +13,22 @@ const seedProducts=[
 ];
 let products=[],filter='all',language='en',supabase=null;
 const cfg=window.KAF_CONFIG||{};
-if(cfg.SUPABASE_URL&&cfg.SUPABASE_ANON_KEY&&window.supabase){supabase=window.supabase.createClient(cfg.SUPABASE_URL,cfg.SUPABASE_ANON_KEY);}
+if (
+  cfg.SUPABASE_URL &&
+  cfg.SUPABASE_ANON_KEY &&
+  window.supabase &&
+  window.supabase.createClient
+) {
+  try {
+    supabase = window.supabase.createClient(
+      cfg.SUPABASE_URL,
+      cfg.SUPABASE_ANON_KEY
+    );
+  } catch (error) {
+    console.error("Supabase initialization failed:", error);
+    supabase = null;
+  }
+}
 const localLoad=()=>{try{return JSON.parse(localStorage.getItem('kaf_products'))||seedProducts}catch{return seedProducts}};
 async function loadProducts(){
  if(supabase){const {data,error}=await supabase.from('products').select('*').order('name');if(!error&&data){products=data;return;}console.warn(error);}
