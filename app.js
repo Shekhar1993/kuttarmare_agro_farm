@@ -76,4 +76,21 @@ document.querySelectorAll('.category-card').forEach(b=>b.addEventListener('click
 document.getElementById('langBtn').addEventListener('click',()=>{language=language==='en'?'hi':'en';document.documentElement.lang=language;document.querySelectorAll('[data-en][data-hi]').forEach(el=>el.innerHTML=el.dataset[language]);document.getElementById('langBtn').textContent=language==='en'?'हिंदी':'English';document.getElementById('searchInput').placeholder=language==='en'?'Search product...':'उत्पाद खोजें...';});
 document.getElementById('menuBtn').addEventListener('click',()=>document.querySelector('nav').classList.toggle('open'));
 document.getElementById('year').textContent=new Date().getFullYear();
-loadProducts().then(render);
+async function startApp() {
+  console.log("Farm website starting...");
+
+  console.log("Supabase connected:", !!supabase);
+
+  await loadProducts();
+
+  console.log("Products found:", products.length);
+  console.log("Products data:", products);
+
+  render();
+
+  console.log("Rendering completed");
+}
+
+startApp().catch(error => {
+  console.error("App startup error:", error);
+});
